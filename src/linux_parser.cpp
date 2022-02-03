@@ -12,11 +12,11 @@ namespace fs = std::filesystem;
  *                  SYSTEM                  *
  ********************************************/
 float LinuxParser::MemoryUtilization() {
-
+    return 0.0;
 }
 
 long LinuxParser::UpTime() {
-    
+    return 0;
 }
 
 std::vector<int> LinuxParser::Pids() {
@@ -37,11 +37,11 @@ std::vector<int> LinuxParser::Pids() {
 }
 
 int LinuxParser::TotalProcesses() {
-
+    return 0;
 }
 
 int LinuxParser::RunningProcesses() {
-
+    return 0;
 }
 
 std::string LinuxParser::OperatingSystem() {
@@ -90,44 +90,44 @@ std::string LinuxParser::Kernel() {
  *                    CPU                   *
  ********************************************/
 std::vector<std::string> LinuxParser::CpuUtilization() {
-
+    return {};
 }
 
 long LinuxParser::Jiffies() {
-
+    return 0;
 }
 
 long LinuxParser::ActiveJiffies() {
-
+    return 0;
 }
 
 long LinuxParser::ActiveJiffies(int pid) {
-
+    return 0;
 }
 
 long LinuxParser::IdleJiffies() {
-
+    return 0;
 }
 
 /********************************************
  *                  PROCESSES               *
  ********************************************/
 std::string LinuxParser::Command(int pid) {
-
+    return std::string();
 }
 
 std::string LinuxParser::Ram(int pid) {
-
+    return std::string();
 }
 
 std::string LinuxParser::Uid(int pid) {
-
+    return std::string();
 }
 
 std::string LinuxParser::User(int pid) {
-
+    return std::string();
 }
 
 long int LinuxParser::UpTime(int pid) {
-
+    return 0;
 }
