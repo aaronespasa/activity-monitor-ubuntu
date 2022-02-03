@@ -12,11 +12,49 @@ namespace fs = std::filesystem;
  *                  SYSTEM                  *
  ********************************************/
 float LinuxParser::MemoryUtilization() {
-    return 0.0;
+    std::string key, value, unit;
+    float total_memory = 0;
+    float free_memory = 0;
+
+    std::ifstream stream(kProcDirectory + kMeminfoFilename);
+    std::string line;
+
+    if(stream.is_open()) {
+        while(std::getline(stream, line)) {
+            std::replace(line.begin(), line.end(), ':', ' ');
+            
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value >> unit) {
+                if(key == "MemTotal") {
+                    total_memory = std::stof(value);
+                } else if (key == "MemFree") {
+                    free_memory = std::stof(value);
+                }
+            }
+        }
+    }
+
+
+    return total_memory - free_memory;
 }
 
 long LinuxParser::UpTime() {
-    return 0;
+    std::string uptime_str, idle_time_str;
+    long uptime;
+
+    std::ifstream stream(kProcDirectory + kUptimeFilename);
+
+    if(stream.is_open()) {
+        std::string line;
+        std::getline(stream, line);
+        std::istringstream linestream(line);
+        // stream until a white space is encountered
+        linestream >> uptime_str >> idle_time_str;
+        uptime = std::stol(uptime_str);
+    }
+
+    return uptime;
 }
 
 std::vector<int> LinuxParser::Pids() {
@@ -31,7 +69,7 @@ std::vector<int> LinuxParser::Pids() {
         std::istringstream linestream(entry_str);
 
         linestream >> proc_str >> pid_str;
-        int pid = stoi(pid_str);
+        int pid = std::stoi(pid_str);
         pids.push_back(pid);
     }
 }
@@ -49,7 +87,7 @@ int LinuxParser::TotalProcesses() {
 
             while(linestream >> key >> value) {
                 if(key == "processes") {
-                    total_processes = stoi(value);
+                    total_processes = std::stoi(value);
                     return total_processes;
                 }
             }
@@ -72,7 +110,7 @@ int LinuxParser::RunningProcesses() {
 
             while(linestream >> key >> value) {
                 if(key == "procs_running") {
-                    running_processes = stoi(value);
+                    running_processes = std::stoi(value);
                     return running_processes;
                 }
             }
