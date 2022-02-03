@@ -189,7 +189,13 @@ long LinuxParser::IdleJiffies() {
  *                  PROCESSES               *
  ********************************************/
 std::string LinuxParser::Command(int pid) {
-    return std::string();
+    std::string command;
+
+    std::ifstream stream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+
+    if(stream.is_open()) { std::getline(stream, command); }
+
+    return command;
 }
 
 std::string LinuxParser::Ram(int pid) {
