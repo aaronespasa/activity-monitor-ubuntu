@@ -56,7 +56,19 @@ std::string LinuxParser::OperatingSystem() {
 }
 
 std::string LinuxParser::Kernel() {
+    std::string os, kernel, version;
 
+    std::ifstream stream(kProcDirectory + kVersionFilename);
+
+    if(stream.is_open()) {
+        std::string line;
+        std::getline(stream, line);
+        std::istringstream linestream(line);
+        // stream until a white space is encountered
+        linestream >> os >> version >> kernel;
+    }
+
+    return kernel;
 }
 
 /********************************************
