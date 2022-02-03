@@ -1,10 +1,12 @@
-#include <dirent.h>
-#include <unistd.h>
+#include <filesystem>
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "linux_parser.h"
+
+namespace fs = std::filesystem;
 
 /********************************************
  *                  SYSTEM                  *
@@ -17,8 +19,21 @@ long LinuxParser::UpTime() {
     
 }
 
-std::vector<int> Pids() {
+std::vector<int> LinuxParser::Pids() {
     // IDs of the process that are being executed
+    std::vector<int> pids;
+    std::string proc_str, pid_str;
+
+    for(const auto &entry : fs::directory_iterator(kProcDirectory)) {
+        std::string entry_str = entry.path();
+        std::replace(entry_str.begin(), entry_str.end(), '/', ' ');
+
+        std::istringstream linestream(entry_str);
+
+        linestream >> proc_str >> pid_str;
+        int pid = stoi(pid_str);
+        pids.push_back(pid);
+    }
 }
 
 int LinuxParser::TotalProcesses() {
