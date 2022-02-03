@@ -37,11 +37,49 @@ std::vector<int> LinuxParser::Pids() {
 }
 
 int LinuxParser::TotalProcesses() {
-    return 0;
+    std::string key, value;
+    int total_processes;
+
+    std::string line;
+    std::ifstream stream(kProcDirectory + kVersionFilename);
+
+    if(stream.is_open()) {
+        while(std::getline(stream, line)) {
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value) {
+                if(key == "processes") {
+                    total_processes = stoi(value);
+                    return total_processes;
+                }
+            }
+        }
+    }
+
+    return total_processes;
 }
 
 int LinuxParser::RunningProcesses() {
-    return 0;
+    std::string key, value;
+    int running_processes;
+
+    std::string line;
+    std::ifstream stream(kProcDirectory + kVersionFilename);
+
+    if(stream.is_open()) {
+        while(std::getline(stream, line)) {
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value) {
+                if(key == "procs_running") {
+                    running_processes = stoi(value);
+                    return running_processes;
+                }
+            }
+        }
+    }
+
+    return running_processes;
 }
 
 std::string LinuxParser::OperatingSystem() {
