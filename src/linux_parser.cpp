@@ -227,10 +227,45 @@ std::string LinuxParser::Ram(int pid) {
 }
 
 std::string LinuxParser::Uid(int pid) {
+    std::string key, value;
+
+    std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+
+    if(stream.is_open()) {
+        std::string line;
+        while(std::getline(stream, line)) {
+            std::replace(line.begin(), line.end(), ':', ' ');
+
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value) {
+                if(key == "Uid") { return value; }
+            }
+        }
+    }
+
     return std::string();
 }
 
 std::string LinuxParser::User(int pid) {
+    std::string uid = Uid(pid);
+    std::string key, value1, value2;
+
+    std::ifstream filestream(kPasswordPath);
+
+    if(filestream.is_open()) {
+        std::string line;
+        while(std::getline(filestream, line)) {
+            std::replace(line.begin(), line.end(), ':', ' ');
+
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value1 >> value2) {
+                if(value2 == uid) { return key; }
+            }
+        }
+    }
+
     return std::string();
 }
 
