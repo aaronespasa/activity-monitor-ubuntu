@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
  *                  SYSTEM                  *
  ********************************************/
 float LinuxParser::MemoryUtilization() {
-    std::string key, value, unit;
+    std::string key, value;
     float total_memory = 0;
     float free_memory = 0;
 
@@ -25,7 +25,7 @@ float LinuxParser::MemoryUtilization() {
             
             std::istringstream linestream(line);
 
-            while(linestream >> key >> value >> unit) {
+            while(linestream >> key >> value) {
                 if(key == "MemTotal") {
                     total_memory = std::stof(value);
                 } else if (key == "MemFree") {
@@ -199,7 +199,31 @@ std::string LinuxParser::Command(int pid) {
 }
 
 std::string LinuxParser::Ram(int pid) {
-    return std::string();
+    double memory_used_double;
+    std::string memory_used_str;
+    std::string key, value, unit;
+
+    std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+
+    if(stream.is_open()) {
+        std::string line;
+        while(std::getline(stream, line)) {
+            std::replace(line.begin(), line.end(), ':', ' ');
+
+            std::istringstream linestream(line);
+
+            while(linestream >> key >> value >> unit) {
+                if(key == "VmSize") {
+                    memory_used_double = std::stod(value);
+                    memory_used_double = memory_used_double / 1024.0;
+                    memory_used_str = std::to_string((int)(memory_used_double)) + unit;
+                    return memory_used_str;
+                }
+            }
+        }
+    }
+
+    return memory_used_str;
 }
 
 std::string LinuxParser::Uid(int pid) {
